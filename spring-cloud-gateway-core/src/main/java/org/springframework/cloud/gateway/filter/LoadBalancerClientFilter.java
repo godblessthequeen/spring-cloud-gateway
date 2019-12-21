@@ -80,6 +80,7 @@ public class LoadBalancerClientFilter implements GlobalFilter, Ordered {
 			log.trace("LoadBalancerClientFilter url before: " + url);
 		}
 
+		//进行负载均衡，一般情况下 LoadBalancerClient 实现类为 org.springframework.cloud.netflix.ribbon.RibbonLoadBalancerClient
 		final ServiceInstance instance = choose(exchange);
 
 		if (instance == null) {
@@ -96,6 +97,7 @@ public class LoadBalancerClientFilter implements GlobalFilter, Ordered {
 			overrideScheme = url.getScheme();
 		}
 
+		//根据负载均衡出来的服务实例构建目标URL
 		URI requestUrl = loadBalancer.reconstructURI(
 				new DelegatingServiceInstance(instance, overrideScheme), uri);
 

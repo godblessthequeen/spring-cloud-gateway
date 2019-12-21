@@ -57,6 +57,7 @@ public class RewritePathGatewayFilterFactory
 
 	@Override
 	public GatewayFilter apply(Config config) {
+		//$\ 用于替代 $ ，避免和 YAML 语法冲突
 		String replacement = config.replacement.replace("$\\", "$");
 		return new GatewayFilter() {
 			@Override

@@ -57,8 +57,16 @@ public class WebsocketRoutingFilter implements GlobalFilter, Ordered {
 
 	private static final Log log = LogFactory.getLog(WebsocketRoutingFilter.class);
 
+	/**
+	 * 使用的是 org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient 实现类.
+	 * 通过该属性，连接后端【被代理】的 WebSocket 服务。
+	 */
 	private final WebSocketClient webSocketClient;
 
+	/**
+	 * 使用的是 org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService 实现类.
+	 * 通过该属性，处理客户端发起的连接请求( Handshake Request ) 。
+	 */
 	private final WebSocketService webSocketService;
 
 	private final ObjectProvider<List<HttpHeadersFilter>> headersFiltersProvider;

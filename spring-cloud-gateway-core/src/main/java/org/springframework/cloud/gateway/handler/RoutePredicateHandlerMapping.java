@@ -56,6 +56,12 @@ public class RoutePredicateHandlerMapping extends AbstractHandlerMapping {
 
 		this.managementPort = getPortProperty(environment, "management.server.");
 		this.managementPortType = getManagementPortType(environment);
+		/**
+		 * 调用 #setOrder(1) 的原因，Spring Cloud Gateway 的 GatewayWebfluxEndpoint 提供 HTTP API ，不需要经过网关，
+		 * 它通过 RequestMappingHandlerMapping 进行请求匹配处理。RequestMappingHandlerMapping 的 order = 0 ，需要排在 RoutePredicateHandlerMapping 前面。
+		 * 所有，RoutePredicateHandlerMapping 设置 order = 1。
+		 * 聚合支付API网关中的健康检查就是因为匹配到了RequestMappingHandlerMapping，所以不需要经过网关
+		 */
 		setOrder(1);
 		setCorsConfigurations(globalCorsProperties.getCorsConfigurations());
 	}
@@ -148,6 +154,9 @@ public class RoutePredicateHandlerMapping extends AbstractHandlerMapping {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Route matched: " + route.getId());
 					}
+					/**
+					 * 校验 Route 的有效性。目前该方法是个空方法，可以通过继承 RoutePredicateHandlerMapping 进行覆盖重写。
+					 */
 					validateRoute(route, exchange);
 					return route;
 				});

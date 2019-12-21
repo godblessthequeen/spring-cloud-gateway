@@ -25,6 +25,9 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 
+/**
+ * 删除一些http1.1中有的，而http1.0中没有的头，做适配。比如client是http1.1的，而service是http1.0的，就需要做这种适配。
+ */
 @ConfigurationProperties("spring.cloud.gateway.filter.remove-hop-by-hop")
 public class RemoveHopByHopHeadersFilter implements HttpHeadersFilter, Ordered {
 

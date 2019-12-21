@@ -106,6 +106,10 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 		ServerHttpRequest request = exchange.getRequest();
 
 		final HttpMethod method = HttpMethod.valueOf(request.getMethodValue());
+		/**
+		 * 这里有个坑，这个方法默认会把url进行UTF-8的URLEncode，可能会导致GBK接口的解析失败
+		 * 2.1.3 Release版本中，这里为：final String url = requestUrl.toString();  这种不会有这种编码问题
+		 */
 		final String url = requestUrl.toASCIIString();
 
 		HttpHeaders filtered = filterRequest(getHeadersFilters(), exchange);

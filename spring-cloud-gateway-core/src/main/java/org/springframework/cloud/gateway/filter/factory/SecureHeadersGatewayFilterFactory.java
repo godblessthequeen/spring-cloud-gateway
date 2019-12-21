@@ -28,6 +28,7 @@ import org.springframework.web.server.ServerWebExchange;
 import static org.springframework.cloud.gateway.support.GatewayToStringStyler.filterToStringCreator;
 
 /**
+ * 添加响应 Secure 相关的 Header
  * https://blog.appcanary.com/2017/http-security-headers.html.
  *
  * @author Spencer Gibb, Thirunavukkarasu Ravichandran

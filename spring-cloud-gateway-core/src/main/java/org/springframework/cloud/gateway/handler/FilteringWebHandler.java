@@ -58,6 +58,10 @@ public class FilteringWebHandler implements WebHandler {
 	private static List<GatewayFilter> loadFilters(List<GlobalFilter> filters) {
 		return filters.stream().map(filter -> {
 			GatewayFilterAdapter gatewayFilter = new GatewayFilterAdapter(filter);
+			/**
+			 * 当 GlobalFilter 子类没有实现了 org.springframework.core.Ordered 接口，
+			 * 在 AnnotationAwareOrderComparator#sort(List) 排序时，顺序值为 Integer.MAX_VALUE 。
+			 */
 			if (filter instanceof Ordered) {
 				int order = ((Ordered) filter).getOrder();
 				return new OrderedGatewayFilter(gatewayFilter, order);

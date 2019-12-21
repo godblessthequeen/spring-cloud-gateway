@@ -26,6 +26,7 @@ import org.springframework.cloud.gateway.support.ShortcutConfigurable;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
+ * 类似于RoutePredicateFactory
  * @author Spencer Gibb
  */
 @FunctionalInterface

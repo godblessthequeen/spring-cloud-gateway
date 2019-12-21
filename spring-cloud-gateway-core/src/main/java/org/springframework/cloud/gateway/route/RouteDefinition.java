@@ -36,6 +36,7 @@ import org.springframework.validation.annotation.Validated;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
+ * 对路由信息的定义，所有配置路由的方式，都将对应的路由配置信息封装在RouteDefinition对象中，最后再统一构建为Route对象
  * @author Spencer Gibb
  */
 @Validated

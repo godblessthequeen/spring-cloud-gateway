@@ -17,6 +17,7 @@
 package org.springframework.cloud.gateway.route;
 
 /**
+ * 继承该类，可以
  * @author Spencer Gibb
  */
 public interface RouteDefinitionRepository

@@ -35,7 +35,7 @@ import org.springframework.validation.annotation.Validated;
 /**
  * @author Spencer Gibb
  */
-@ConfigurationProperties("spring.cloud.gateway")
+@ConfigurationProperties("spring.cloud.gateway") //将spring.cloud.gateway为前缀的配置设置给本类的属性，比如以yaml路由配置的形式，路由配置就是spring.cloud.gateway.routes
 @Validated
 public class GatewayProperties {
 

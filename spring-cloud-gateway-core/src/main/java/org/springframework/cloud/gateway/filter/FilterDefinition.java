@@ -41,6 +41,10 @@ public class FilterDefinition {
 	public FilterDefinition() {
 	}
 
+	/**
+	 * 通过构造方法，将这种配置：AddRequestHeader=X-Request-Foo, Bar，转换为FilterDefinition对象
+	 * @param text
+	 */
 	public FilterDefinition(String text) {
 		int eqIdx = text.indexOf('=');
 		if (eqIdx <= 0) {

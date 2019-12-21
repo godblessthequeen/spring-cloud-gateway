@@ -34,6 +34,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.containsEncodedParts;
 
 /**
+ * 根据匹配的 Route计算请求的地址。注意，这里的地址指的是 URL ，而不是 URI（因为需要访问到具体的资源）.
+ * 聚合支付API网关禁用掉了这个Filter，因为是在规则匹配到单元后才会去计算请求地址。
  * @author Spencer Gibb
  */
 public class RouteToRequestUrlFilter implements GlobalFilter, Ordered {
@@ -68,6 +70,7 @@ public class RouteToRequestUrlFilter implements GlobalFilter, Ordered {
 		log.trace("RouteToRequestUrlFilter start");
 		URI uri = exchange.getRequest().getURI();
 		boolean encoded = containsEncodedParts(uri);
+		//如果 Route.uri 属性配置带有 Path ，则会覆盖请求的 Path
 		URI routeUri = route.getUri();
 
 		if (hasAnotherScheme(routeUri)) {

@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setResponseStatus;
 
 /**
+ * 使用 Redis + Lua 实现分布式限流。目前尚不成熟，待后续研究.
  * User Request Rate Limiter filter. See https://stripe.com/blog/rate-limiters and
  * https://gist.github.com/ptarjan/e38f45f2dfe601419ca3af937fff574d#file-1-check_request_rate_limiter-rb-L11-L34.
  */
@@ -45,8 +46,10 @@ public class RequestRateLimiterGatewayFilterFactory extends
 
 	private static final String EMPTY_KEY = "____EMPTY_KEY__";
 
+	//限流器。默认情况下，使用 RedisRateLimiter
 	private final RateLimiter defaultRateLimiter;
 
+	//默认限流键解析器。默认情况下，使用 PrincipalNameKeyResolver
 	private final KeyResolver defaultKeyResolver;
 
 	/**

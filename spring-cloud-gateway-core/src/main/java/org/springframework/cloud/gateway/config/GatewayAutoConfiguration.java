@@ -154,7 +154,7 @@ import static org.springframework.cloud.gateway.config.HttpClientProperties.Pool
  * @author Spencer Gibb
  * @author Ziemowit Stolarczyk
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration(proxyBeanMethods = false) //proxyBeanMethods = false 意为不使用代理,如果配置为true，那么需要为@Bean方法加上拦截器，对Bean进行CGLIB增强
 @ConditionalOnProperty(name = "spring.cloud.gateway.enabled", matchIfMissing = true)
 @EnableConfigurationProperties
 @AutoConfigureBefore({ HttpHandlerAutoConfiguration.class,
@@ -188,6 +188,11 @@ public class GatewayAutoConfiguration {
 		return new InMemoryRouteDefinitionRepository();
 	}
 
+	/**
+	 * 把RouteDefinitionLocator都封装在CompositeRouteDefinitionLocator中
+	 * @param routeDefinitionLocators
+	 * @return
+	 */
 	@Bean
 	@Primary
 	public RouteDefinitionLocator routeDefinitionLocator(
@@ -207,7 +212,7 @@ public class GatewayAutoConfiguration {
 	public RouteLocator routeDefinitionRouteLocator(GatewayProperties properties,
 			List<GatewayFilterFactory> gatewayFilters,
 			List<RoutePredicateFactory> predicates,
-			RouteDefinitionLocator routeDefinitionLocator,
+			RouteDefinitionLocator routeDefinitionLocator,//引用上面的CompositeRouteDefinitionLocator，从而引入了各种RouteDefinitionLocator解析的Route配置
 			ConfigurationService configurationService) {
 		return new RouteDefinitionRouteLocator(routeDefinitionLocator, predicates,
 				gatewayFilters, properties, configurationService);
@@ -217,8 +222,8 @@ public class GatewayAutoConfiguration {
 	@Primary
 	// TODO: property to disable composite?
 	public RouteLocator cachedCompositeRouteLocator(List<RouteLocator> routeLocators) {
-		return new CachingRouteLocator(
-				new CompositeRouteLocator(Flux.fromIterable(routeLocators)));
+		return new CachingRouteLocator( //将所有的Route对象缓存起来
+				new CompositeRouteLocator(Flux.fromIterable(routeLocators)));//封装上文的RouteLocator对象，但是就只有上面这一个，所以官方在考虑是不是去掉这一层封装
 	}
 
 	@Bean
@@ -555,6 +560,9 @@ public class GatewayAutoConfiguration {
 		return new RequestHeaderSizeGatewayFilterFactory();
 	}
 
+	/**
+	 * Netty配置类
+	 */
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(HttpClient.class)
 	protected static class NettyConfiguration {
@@ -582,19 +590,21 @@ public class GatewayAutoConfiguration {
 			HttpClientProperties.Pool pool = properties.getPool();
 
 			ConnectionProvider connectionProvider;
-			if (pool.getType() == DISABLED) {
+			//设置HttpClient连接池类型
+			if (pool.getType() == DISABLED) { //不使用
 				connectionProvider = ConnectionProvider.newConnection();
 			}
-			else if (pool.getType() == FIXED) {
+			else if (pool.getType() == FIXED) { //固定大小
 				connectionProvider = ConnectionProvider.fixed(pool.getName(),
 						pool.getMaxConnections(), pool.getAcquireTimeout(),
 						pool.getMaxIdleTime());
 			}
-			else {
+			else { //可伸缩，不限制大小
 				connectionProvider = ConnectionProvider.elastic(pool.getName(),
 						pool.getMaxIdleTime());
 			}
 
+			//创建HttpClient，并设置属性
 			HttpClient httpClient = HttpClient.create(connectionProvider)
 					.tcpConfiguration(tcpClient -> {
 
@@ -688,6 +698,12 @@ public class GatewayAutoConfiguration {
 			return new NettyWriteResponseFilter(properties.getStreamingMediaTypes());
 		}
 
+		/**
+		 * 用于下文WebsocketRoutingFilter 的 Bean 对象创建
+		 * @param properties
+		 * @param httpClient
+		 * @return
+		 */
 		@Bean
 		public ReactorNettyWebSocketClient reactorNettyWebSocketClient(
 				HttpClientProperties properties, HttpClient httpClient) {

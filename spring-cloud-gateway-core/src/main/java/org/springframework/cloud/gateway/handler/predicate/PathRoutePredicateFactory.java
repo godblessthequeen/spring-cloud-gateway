@@ -71,6 +71,10 @@ public class PathRoutePredicateFactory
 		return Arrays.asList("patterns", MATCH_OPTIONAL_TRAILING_SEPARATOR_KEY);
 	}
 
+	/**
+	 * 定义了如何将参数绑定到Config类的属性中，比如这里，就是将args中所有value的值拼成一个List，赋值给该Config中的patterns属性
+	 * @return
+	 */
 	@Override
 	public ShortcutType shortcutType() {
 		return ShortcutType.GATHER_LIST_TAIL_FLAG;
@@ -122,6 +126,9 @@ public class PathRoutePredicateFactory
 
 		private List<String> patterns = new ArrayList<>();
 
+		/**
+		 * 用于PatternParse中，如果为true，则可以路径不管是否以/为结束都可以匹配，如果为false，则必须以/为结尾才可以匹配
+		 */
 		private boolean matchOptionalTrailingSeparator = true;
 
 		@Deprecated
